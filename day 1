@@ -1,0 +1,235 @@
+#2023.06.26 - 28
+#헬스케어 파이썬 데이터 분석 실무 교육
+#가천대학교 공학교육 혁신센터
+#생능 따라하며 배우는 파이썬과 데이터과학
+#9장 데이터를 만들어보자 실습
+
+#위치 반환
+s= 'monty Python'
+
+#문자열 분리
+m='2023.06.26'
+m.split('.')
+
+n='Welcome, to,  Python, and ,  bla, bla   '
+[x.strip() for x in n.split(',')]
+list(n)
+
+#문자 대체 
+'-'.join('010.1234.1244'.split('.'))
+'010.1233.4314'.replace('.','-')
+
+a_str = 'Acrions \n\t speak louder than words'
+print (a_str)
+
+word_list = a_str.split()
+word_list
+refinded_string = ' '.join(word_list)
+refinded_string
+
+s='www.booksr.co.kr'
+s.find('.kr')
+s.find('2ds')
+s.count('w')
+s.count('4')
+
+ord(max(s))
+ord('s')
+
+#------------------------------------------------------------------------
+#string 모듈
+import string
+src_str = string.ascii_uppercase
+print('src_str = ', src_str)
+
+#순서바꾸기 
+dst_str = src_str[1:] + src_str[:1]
+dst_str = src_str[4:] +' '+ src_str[:4]
+print('dst_str = ', dst_str)
+
+src_str
+dst_str
+n = src_str.index('A')
+print('scr_str의 A 인덱스 =', n)
+print('src_str의 A위치에 있는 dst_str의 문자 = ', dst_str[n])
+
+#카이사르 암호 만들기 (소문자.ver)
+src_str = string.ascii_lowercase
+
+def kai (key):
+    src_str = string.ascii_lowercase    
+    dst_str = src_str[key:] + src_str[:key]
+
+    a = str(input("문장을 입력하시오: "))
+    print('암호화된 문장 : ', end='')
+
+    for ch in src:
+        if ch in src_str:
+            idx = src_str.index(a)
+            AF = dst_str[idx]
+            print(AF, end='')
+        else:
+            print(ch, end='')
+
+kai(4)
+
+
+    
+
+
+#해설지 ver
+import string
+
+src_str = string.ascii_uppercase
+dst_str = src_str[3:] + src_str[:3]
+
+def cipher(a):          # 암호화 코드를 만드는 함소
+    idx = src_str.index(a)
+    return dst_str[idx]
+
+src = input('문장을 입력하시오: ')
+print('암호화된 문장 : ', end='')
+
+for ch in src:
+    if ch in src_str:
+        print(cipher(ch), end='')
+    else:
+       print(ch, end='')
+  
+print()
+
+#트위터 메시지 처리의 단어추출
+#multiline ''' 따옴표 3개'''
+twt = '''There's a reason some people are working to make it garder to vote,
+ espectially for people of color. It's becaouse when we show up, things change.'''
+len(twt.split())
+
+
+
+#otp 생성하기
+import random
+n_digits = int(input('몇 자리의 비밀번호를 원하십니까? '))
+               
+otp = '' 
+for i in range(n_digits) : 
+      otp += str(random.randrange(0, 10))
+      
+print(otp)
+
+
+#--------------------------------------------------
+#9.7
+import wikipedia as wk
+from wordcloud import WordCloud
+import matplotlib.pyplot as plt
+from wordcloud import WordCloud, STOPWORDS
+
+
+wiki = wk.page('Artificial intelligence')       #위키백과 사전의 컨텐츠 제목 명시
+text = wiki.content                             #wiki 페이지의 텍스트 컨텐츠 추출
+wdcl = WordCloud(width = 2000, height = 1500).generate(text)        #워드 클라우드 생성
+
+plt. figure(figsize=(40,30))
+plt.imshow(wdcl)                                #이미지 그리기 함수
+plt.show()
+
+
+#중지어가 제외된 워드 클라우드
+s_words = STOPWORDS.union( {'one','using','first','two','make','use'})
+wordcloud = WordCloud(width = 2000, height = 1500,
+                      stopwords = s_words).generate(text)
+
+
+import re
+txt1 = 'life is too short, you need python'
+txt2 = 'the best moments of my life'
+
+print(re.search('life', txt1))
+print(re.search('life', txt2))
+
+match = re.search('life', txt1)
+match.group()
+match.end()
+match.span()
+
+print(re.search('life|Life', txt2))
+print(re.search('[Ll]ife', txt2))
+#^첫문자 검색 $마지막 문자 검색
+print(re.search('^life', txt2))
+
+
+
+#메타문자 'AB+'
+re.search('A..A','ABA')         #x
+re.search('A..A','ABBA')        #<re.Match object; span=(0, 4), match='ABBA'>
+re.search('a..a','abbba')
+
+
+re.search('ab*','a')
+re.search('ab*','aa')
+re.search('ab*','j-hope')       #x
+re.search('ab*','x-man')
+re.search('ab*','cabbbba')
+
+
+#----------------
+#9.10 정규식 활용
+import re
+f= open('C:/Users/b2twt/OneDrive/바탕 화면/healthcare python/source-ch9-13/Ch09/UNDHR.txt')
+
+
+for line in f:
+    line = line.rstrip()
+    if re.search('^\([0-9]+\)', line) :
+        print(line)
+
+
+#9-5 실습 학사코드 추출하기
+text = '''101 com pythonprogramming
+ 102 mat linearalgebra
+ 103 eng computerenglish'''
+
+s= re.findall('\d+',text)
+print(s)
+
+#9-6 이메일 주소 분석
+text = 'abc@facebook.com 와 bbc@google.com에서 이메일이 도착했습니다'
+s= re.findall('\S+@[a-z]+', text)
+print(s)
+
+
+#도전문제 9.6
+text = 'abc@facebook.com 와 bbc@google.com에서 이메일이 도착했습니다'
+s= re.findall('\S+@[a-z]+', text)
+for txt in s:
+    text_split = txt.split('@')
+    print('추출된 아이디 : ' + text_split[0] + ' , 도메인 : ' + text_split[1])
+
+#9-7 패스워드 검사 프로그램 
+while True : 
+    password = input('패스워드 입력 : ');
+
+    if len(password)<8 or not re.search("[a-z]",password) or \
+        not re.search("[A-Z]", password) or \
+        not re.search("[0-9]",password) or not re.search("[_,@,$,!]", password):
+        print ('유효하지 않은 패스워드입니다')
+    else: 
+        print("유효한 패스워드")
+        break
+
+
+#9.11 정규식에서 특정 문자 대체
+s= 'I like BTS'
+re.sub('BTS', 'Black Pink',s)
+
+ss = "my lucky number 2 5 03292"
+re.sub('[0-9]','*' , ss)
+re.sub('\d+','*' , ss)
+
+#암호화 풀기
+def renum(a):
+    n = int(a.group())
+    return str(n * 2345 % 973)
+
+print(re.sub('[0-9]+', renum, ss))
+
