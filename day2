@@ -1,0 +1,237 @@
+#2023.06.26 - 28
+#헬스케어 파이썬 데이터 분석 실무 교육
+#가천대학교 공학교육 혁신센터
+#생능 따라하며 배우는 파이썬과 데이터과학
+#10장 넘파이로 수치 데이터를 처리해보자
+
+import numpy as np
+
+#10.3
+mid_S = np.array([10,20,30])
+final_s= np.array([60,70,80])
+
+total= mid_S + final_s 
+print('성적 합계: ', total)
+print('성적 평균: ', total/2)
+
+#도전문제 10.1
+a= np.array(range(1,11))        #array([ 1,  2,  3,  4,  5,  6,  7,  8,  9, 10])
+b=np.array(range(10,101,10))    #array([ 10,  20,  30,  40,  50,  60,  70,  80,  90, 100])a
+
+print(a+b)      #[ 11  22  33  44  55  66  77  88  99 110]
+print(a-b)      #[ -9 -18 -27 -36 -45 -54 -63 -72 -81 -90]
+print(a*b)      #[  10   40   90  160  250  360  490  640  810 1000]
+print(a/b)      #[0.1 0.1 0.1 0.1 0.1 0.1 0.1 0.1 0.1 0.1]
+
+
+#LAB10-1 nadrray 객체를 생성하고 속성을 알아보자
+array_a = np.array([ 1,  2,  3,  4,  5,  6,  7,  8,  9])
+array_b = np.array(range (1,10))
+array_c = np.array(range (1,10,2))
+array_c.shape           # (5,)
+array_c.ndim            # 1
+array_c.dtype           # dtype('int32')
+array_c.size            # 5
+array_c.itemsize        # 4
+
+
+
+#LAB10-2
+heights = [ 1.83, 1.76, 1.69, 1.86, 1.77, 1.73 ]
+weights = [ 86,    74,    59,   95,    80,   68  ]
+
+np_heights = np.array(heights)
+np_weights = np.array(weights)
+
+bmi = np_weights/(np.array(heights)**2)
+print(bmi)
+
+#10.9 
+np_array = np.array([[1,2,3], [4,5,6], [7,8,9]]) 
+np_array[0, 2]          #numpy style
+np_array[0][2]          #list style
+
+#파이썬 리스트 슬라이싱과 넘파이 스타일 슬라이싱의 차이
+
+np_array = np.array([[ 1,  2,  3,  4], 
+                     [ 5,  6,  7,  8], 
+                     [ 9, 10, 11, 12], 
+                     [13, 14, 15, 16]]) 
+print(np_array[::2][::2]) # 첫 슬라이싱: 0행, 2행 선택, 두 번째 슬라이싱: 그 중 0행 선택
+print(np_array[::2,::2])  # 행 슬라이싱: 0행, 2행 선택, 열 슬라이싱: 0열 2열 선택
+
+np_array[0:2, 2:4]      #1,2행 , 3,4,열
+
+
+#10.11
+np_array = np.array([[1,2,3], [4,5,6], [7,8,9]]) 
+np_array > 5
+
+np_array[ np_array >5 ]         #array([6, 7, 8, 9])
+np_array[:,2] > 5               #array([False,  True,  True])
+np_array[np_array[:,2] > 5 ]    #array([[4, 5, 6],
+#                                       [7, 8, 9]])
+
+#range() 함수와 arange() 함수 비교
+np.arange(5)                #array([0, 1, 2, 3, 4])
+range(5)                    #range(0, 5)
+np.array(range(5))          #array([0, 1, 2, 3, 4])
+
+np.arange(1,6)              #array([1, 2, 3, 4, 5])
+range(1,6)                  #range(1, 6)
+
+# reshpe()과   flatten()함수
+# n차원 배열 / 1차원 배열
+
+y = np.arange(12)       #array([ 0,  1,  2,  3,  4,  5,  6,  7,  8,  9, 10, 11])
+
+y.reshape(6, -1)        #-1 : 자동배열
+y.reshape(7, 2)         #ERROR
+
+y.flatten()             #1차원 배열
+
+
+#10.16 정규분포 난수생성
+s= np.random.seed(10)       #None
+
+np.random.rand(5)
+np.random.rand(5,3)
+
+#--------------------------------------------------------------------------------------
+#2023.06.26 - 28
+#헬스케어 파이썬 데이터 분석 실무 교육
+#가천대학교 공학교육 혁신센터
+#생능 따라하며 배우는 파이썬과 데이터과학
+#11장 차트를 멋지게 그려보자
+
+#11.3 matplotlib
+import numpy as np
+import matplotlib.pyplot as plt
+
+#GDP 그래프 그리기 
+years = [1950, 1960, 1970, 1980, 1990, 2000, 2010] 
+gdp = [67.0, 80.0, 257.0, 1686.0, 6505, 11865.3, 22105.3] 
+
+plt.plot(years, gdp, color='green', marker ='o', linestyle = 'solid')   #(x,y,옵션)
+plt.title("GDP per capita")                                             # 제목
+plt.ylabel("dollars")                                                   #y축 레이블
+#plt.savefig("gdp_percapita.png", dpi=600)                              #이미지 저장    
+plt.show()
+
+
+# LAB11-1 수학함수도 쉽게 그려보자
+x = np.array(range(-10,10))
+y = 2*x
+plt.plot(x, y, color='navy', marker ='o', linestyle='solid')
+plt.axis([-20,20,-20,20])
+plt.show()
+
+
+#답안
+x = [x for x in range(-10,10)]
+y = [2*t for t in x]
+
+plt.plot(x, y, marker ='o')
+plt.axis([-20,20,-20,20])
+plt.show()
+
+#11.5 다른 장식을 사용하여 한번에 세 함수그리기 
+x = [x for x in range(-20,20)]
+y1 = [2*t for t in x]
+y2 = [t**2 +5 for t in x]
+y3 = [-t **2 -5 for t in x]
+
+plt.plot(x, y1, 'r--',x,y2,'w^-', x,y3, 'y*:')
+plt.axis([-30,30,-30,30])
+plt.show()
+
+
+
+
+#11.7 막대형 차트 그리기
+
+# 1인당 국민소득 
+plt.subplot(2,2,1)
+years = [1950, 1960, 1970, 1980, 1990, 2000, 2010] 
+gdp = [67.0, 80.0, 257.0, 1686.0, 6505, 11865.3, 22105.3] 
+ 
+plt.bar(range(len(years)), gdp) 
+ 
+plt.title("GDP per capita")   # 제목 
+plt.ylabel("dollars")         # y축 레이블 
+plt.xticks(range(len(years)), years)  # y축 틱 
+#plt.show()
+
+# 여러나라의 1인당 국민소득
+plt.subplot(2,2,2)
+years = [1965, 1975, 1985, 1995, 2005, 2015]
+ko = [130, 650, 2450, 11600, 17790, 27250]
+jp = [890, 5120, 11500, 42130, 40560, 38780]
+ch = [100, 200, 290, 540, 1760, 7940]
+
+x= np.arange(len(years))
+plt.bar(x, jp, width = 0.25)
+plt.bar(x, ko, width = 0.25)
+plt.bar(x, ch, width = 0.25)            #순서에 따라 먼저 그려짐 -> 큰값 먼저, 작은값을 위에 씌우기
+#plt.show()
+
+plt.subplot(2,2,3)
+plt.bar(x+0.0, jp, width = 0.25)
+plt.bar(x+0.1, ko, width = 0.25)
+plt.bar(x+0.2, ch, width = 0.25) 
+plt.show()
+
+#11.9 산포도 그래프
+plt.subplot(2,2,1)
+
+xdata = np.arange(20,50)
+ydata = xdata + 2*np.random.randn(30) 
+
+plt.scatter(xdata, ydata, alpha=0.6)        # alpha< 1 = 투명도 
+plt.title('real age VS Physical Age')
+plt.xlabel('Real Age')
+plt.ylabel('Physical Age')
+#plt.savefig("age.png", dpi =600)
+
+#11.10 파이차트
+plt.subplot(2,2,2)
+time =[8,14,2]
+timelabels = ["sleep","study","Play"]
+plt.pie(time, labels= timelabels, autopct= "%.2f")
+
+#11.11 히스토그램
+plt.subplot(2,2,3)
+books =[17,3,6,34,9,5,23,4,6,3,21,18,4,22,5]
+plt.hist(books, bins = 5)
+plt.xlabel("books")
+plt.ylabel("frequency")
+
+#11.12 겹쳐진 히스토그램
+plt.subplot(2,2,4)
+n_bins=10
+x= np.random.randn(1000)
+y=np.random.randn(1000)
+
+plt.hist(x,n_bins, histtype='bar', color = "red")
+plt.hist(y, n_bins, histtype='bar', color='blue', alpha=0.6)
+#plt.axis([-3,3,0,250])
+plt.show()
+
+
+#도전문제 11.5
+x= [1,2,3,4,5,6,7,8,9,10]
+plt.hist(x, bins=5, width = 0.25)
+plt.show()
+
+#11.13 상자차트
+plt.subplot(2,2,1)
+randata=np.random.randn(100)
+plt.boxplot(randata)
+
+plt.subplot(2,2,2)
+data1 = [1,2,3,3,4,5,3,2]
+data2 = [2,3,4,5,6,5,9,4]
+plt.boxplot([data1,data2])
+plt.subplot(2,2,4)
+plt.boxplot(np.array([data1,data2]))
+plt.show()
