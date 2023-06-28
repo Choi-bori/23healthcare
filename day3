@@ -1,0 +1,249 @@
+#2023.06.26 - 28
+#헬스케어 파이썬 데이터 분석 실무 교육
+#가천대학교 공학교육 혁신센터
+#생능 따라하며 배우는 파이썬과 데이터과학
+#12장 판다스로 데이터를 분석해보자
+
+import csv, urllib.request
+import pandas as pd
+f = open('../weather.csv')
+data = csv.reader(f)
+for row in data:
+    print(row)
+f.close()
+
+#12.5 csv에서 원하는 데이터를 뽑아보자
+#4번째 열 원소 출력
+f = open('../weather.csv')
+data =csv.reader(f)
+header = next(data)
+for row in data:
+    print(row[3], end = ',')
+f.close()
+
+#4번쨰 열 원소중 최대값
+max_wind=0.0
+for row in data:
+    if row[3]=='':
+        wind=0
+    else:
+        wind = float(row[3])
+    if max_wind < wind :
+        max_wind = wind
+    
+print("지난 10년간 울릉도의 최대 풍속은 ", max_wind,'m/s')
+
+#정답
+url = 'https://raw.githubusercontent.com/dongupak/DataSciPy/master/data/csv/weather.csv'
+response = urllib.request.urlopen(url)
+lines = [l.decode('cp949') for l in response.readlines()]
+data = csv.reader(lines)
+header = next(data)               # 헤더를 제거한다. 
+
+max_wind = 0.0
+for row in data:                    # 반복 루프를 사용하여 데이터를 읽는다.
+    if row[3] == '' :             # 평균 풍속 데이터가 없는 경우 0을 처리
+        wind = 0
+    else :
+        wind = float(row[3])    # 평균 풍속 데이터를 실수로 변환해 저장
+    if max_wind < wind :          # 최대 풍속을 갱신하는지 검사
+        max_wind = wind         # 현재까지의 최대 풍속보다 크면 새로 기록
+
+print('지난 10년간 울릉도의 최대 풍속은 ', max_wind, 'm/s')
+
+
+
+#LAb12-1 울릉도는 몇월에 바람이 가장 강할까
+# 로컬 PC에서 코드 실행하기
+
+import csv
+import matplotlib.pyplot as plt 
+ 
+f = open('../weather.csv')                 # CSV 파일 열어 f에 저장 
+data = csv.reader(f)                       # reader() 함수로 읽기
+header = next(data)                        # 헤더를 제거
+
+monthly_wind = [ 0 for x in range(12) ]    # 매달 풍속을 담을 리스트
+days_counted = [ 0 for x in range(12) ]    # 각 달마다 측정된 일수
+
+for row in data: 
+    month = int(row[0][5:7])               # 0번 열에서 달 정보 추출
+    if row[3] !=  '' :                     # 풍속 데이터 존재하는지 확인
+        wind = float(row[3])               # 풍속을 얻어 온다.
+        monthly_wind[month-1] += wind      # 해당 달에 풍속 데이터 추가
+        days_counted[month-1] += 1         # 해당 달의 일수를 증가
+
+for i in range(12) :
+      monthly_wind[i] /= days_counted[i]   # 일수로 나누어 월평균 구하기
+      
+plt.plot(monthly_wind, 'blue') 
+plt.show()
+
+f.close()                                  # 파일을 닫는다.
+
+#12.6 판다스의 데이터구조 : 시리즈와 데이터프레임
+import pandas as pd
+url = 'https://raw.githubusercontent.com/dongupak/DataSciPy/master/data/csv/countries.csv'
+df = pd.read_csv(url)
+df = pd.read_csv('c:/data/countries.csv', index_col = 0)
+print(df)
+
+#12.9 열을 기준으로 데이터 선택하기 
+df_my_index = pd.read_csv(url, index_col = 0)
+df_no_index = pd.read_csv(url)
+df_my_index[['area', 'population']]
+print(df_my_index['population'])
+print(df_no_index['population'])
+
+df_my_index = pd.read_csv(url,index_col=0)
+print(df_my_index[ ['area','population']])
+
+#12.10 데이터 가시화하기
+import pandas as pd
+import matplotlib.pyplot as plt 
+
+pie_url = 'https://raw.githubusercontent.com/dongupak/DataSciPy/master/data/csv/countries.csv'
+countri = pd.read_csv(pie_url, index_col = 0)
+plt.subplot(2,2,1)
+countri['population'].plot(kind='pie')
+plt.subplot(2,2,2)
+countri['population'].plot(kind='bar', color=('b', 'darkorange','g','r','m'))
+#plt.show()
+
+plt.subplot(2,2,3)
+weather_url = 'https://raw.githubusercontent.com/dongupak/DataSciPy/master/data/csv/weather.csv'
+weather_df = pd.read_csv(weather_url, index_col = 0, encoding='CP949')
+weather_df.head()
+weather_df['평균풍속'].plot(kind ='hist', bins=33, width=0.25, color= 'orange')
+plt.show()
+
+
+#12.11 판다스에서 슬라이싱으로 행 선택 
+pie_url = 'https://raw.githubusercontent.com/dongupak/DataSciPy/master/data/csv/countries.csv'
+countri = pd.read_csv(pie_url, index_col = 0)
+
+countri.loc['KR']   
+countri['population'][:3]
+countri.loc['US','capital']         #동일결과
+countri['capital'].loc['US']        #동일결과\
+
+
+#판다스로 울릉도 바람 세기 분석하기
+import pandas as pd
+import matplotlib.pyplot as plt
+import datetime as dt
+weather_url
+weather = pd.read_csv(weather_url, encoding='CP949')
+monthly = [ 0 for x in range(12) ]    # 달별로 구분된 12개의 데이터
+monthly_wind = [ 0 for x in range(12) ]  # 각 달의 평균 풍속을 담을 리스트
+
+weather['month'] = pd.DatetimeIndex(weather['일시']).month
+
+weather.tail()
+
+
+
+
+
+#2023.06.26 - 28
+#헬스케어 파이썬 데이터 분석 실무 교육
+#가천대학교 공학교육 혁신센터
+#생능 따라하며 배우는 파이썬과 데이터과학
+#13장 시각정보를 다루어보자
+
+import cv2
+import matplotlib.pyplot as plt
+import matplotlib.image as mpimg
+
+#이미지 불러오기
+img = mpimg.imread('../mandrill.png')
+img = img * 0.5
+plt.imshow(img)
+image_plot = plt.imshow(img)
+plt.show()
+
+
+#Open CV로 이미지 불러오기
+img_gray = cv2.imread('../mandrill.png', cv2.IMREAD_GRAYSCALE)
+img_color = cv2.imread('../mandrill.png', cv2.IMREAD_COLOR)
+
+img_gray = cv2.cvtColor(img_gray, cv2.COLOR_BGR2RGB)
+img_color = cv2.cvtColor(img_color, cv2.COLOR_BGR2RGB)
+
+plt.subplot(121), plt.axis('off'), plt.imshow(img_gray)
+plt.subplot(122), plt.axis('off'), plt.imshow(img_color)
+
+#cv2.line( 이미지, 시작지점 좌표, 끝지점 좌표, 색상, 굵기, 선의 종류, 좌표 시프트)
+
+img = cv2.imread('mandrill.png', 1)
+cv2.line(img, (0,0), (200,200), (0,0,255), 5)
+cv2.arrowedLine(img, (0,200), (200,20), (0,0,255), 5)
+
+img = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
+plt.imshow(img)
+
+
+
+mask_image = cv2.imread('mask_python.png')
+back_image = cv2.imread('iceberg.png')
+mask_Inverted = cv2.bitwise_and(cv2.bitwise_not(mask_image), back_image)
+
+import cv2
+mask_image = cv2.imread('mask_circle.png')
+back_image = cv2.imread('iceberg.png')
+mask_image = cv2.resize(mask_image, (300,400))
+back_image = cv2.resize(back_image, (300,400))
+
+mask_image = cv2.cvtColor(mask_image, cv2.COLOR_BGR2RGB)
+back_image = cv2.cvtColor(back_image, cv2.COLOR_BGR2RGB)
+
+mask_ANDed = cv2.bitwise_and(mask_image, back_image)
+mask_ORed = cv2.bitwise_or(mask_image, back_image)
+mask_XORed = cv2.bitwise_xor(mask_image, back_image)
+mask_Inverted = cv2.bitwise_and(cv2.bitwise_not(mask_image), back_image)
+
+plt.subplot(231), plt.axis('off'), plt.imshow(mask_image)
+plt.subplot(232), plt.axis('off'), plt.imshow(back_image)
+plt.subplot(233), plt.axis('off'), plt.imshow(mask_ANDed)
+plt.subplot(234), plt.axis('off'), plt.imshow(mask_ORed)
+plt.subplot(235), plt.axis('off'), plt.imshow(mask_XORed)
+plt.subplot(236), plt.axis('off'), plt.imshow(mask_Inverted)
+
+
+
+#13.7 원하는 색깔 픽셀만 뽑아보자 (ㅋ로마키)
+import numpy as np
+import cv2
+
+image = cv2.imread('../mandrill.png')
+
+#image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
+
+image_hsv = cv2.cvtColor(image, cv2.COLOR_RGB2HSV)
+
+
+blue_low = np.array([80, 0, 0])
+blue_high = np.array([130, 255, 255])
+
+mask = cv2.inRange(image_hsv, blue_low, blue_high)
+mask = cv2.cvtColor(mask, cv2.COLOR_BGR2RGB)
+plt.imshow(mask)
+#plt.subplot(121), plt.axis('off'), plt.imshow(image)
+#plt.subplot(122), plt.axis('off'), plt.imshow(mask)
+plt.show()
+
+
+#13.8 이미지에 필터씌우기
+
+org = cv2.imread('mandrill.png', 1)
+org = cv2.cvtColor(org, cv2.COLOR_BGR2RGB)
+
+kernel1 = np.ones((3,3), np.float32) / 9
+kernel2 = np.ones((9,9), np.float32) / 81
+
+averaged33 = cv2.filter2D(org, -1, kernel1)
+averaged99 = cv2.filter2D(org, -1, kernel2)
+
+plt.subplot(131), plt.axis('off'), plt.imshow(org)
+plt.subplot(132), plt.axis('off'), plt.imshow(averaged33)
+plt.subplot(133), plt.axis('off'), plt.imshow(averaged99)
